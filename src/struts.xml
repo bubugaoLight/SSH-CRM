@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+   <!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+  
+	<struts>
+	    <!-- # struts.objectFactory = spring
+				  struts.objectFactory.spring.autoWire = name -->
+		<constant name="struts.objectFactory" value="spring"></constant>
+
+	    <constant name="struts.i18n.encoding" value="UTF-8"></constant>
+	    <constant name="struts.devMode"  value="true"></constant>
+	    
+	    <package name="crm" namespace="/" extends="struts-default">
+	        
+	        	<!-- 注册拦截器 -->
+	        <interceptors>
+	            <interceptor name="privilegeInterceptor" class="cn.itcast.web.interceptor.PrivilegeInterceptor"></interceptor>
+	            <!-- 配置拦截器栈 -->
+	            <interceptor-stack name="myStack">
+	                		<interceptor-ref name="privilegeInterceptor">
+	                		    	<param name="excludeMethods">login,regist</param>
+	                		</interceptor-ref>
+	                		<interceptor-ref name="defaultStack"></interceptor-ref>
+	            </interceptor-stack>
+	        </interceptors>
+	            <!-- 指定默认拦截器 -->
+	        <default-interceptor-ref name="myStack"></default-interceptor-ref>
+	        
+	        <!-- 全局结果集配置 -->
+	        <global-results>
+	            	<result name="toLogin" type="redirect">/login.jsp</result>
+	        </global-results>
+	        
+	        <action name="CustomerAction_*" class="customerAction" method="{1}">
+	            	<result name = "edit">/jsp/customer/add.jsp</result>
+	            	<result name="list">/jsp/customer/list.jsp</result>
+	            	<result name="tolist"  type="redirectAction">
+	               		 <param name="namespace">/</param>
+	                	 <param name="actionName">CustomerAction_list</param>
+	                </result>
+	        </action>
+	        <action name="LinkManAction_*" class="linkManAction" method="{1}">
+	            	<result name="add">/jsp/linkman/add.jsp</result>
+	         		<result name="list">/jsp/linkman/list.jsp</result>
+	            	<result name="tolist"  type="redirectAction">
+	               		 <param name="namespace">/</param>
+	                	 <param name="actionName">LinkManAction_list</param>
+	                </result>
+	        </action>
+	        
+		<action name="UserAction_*" class="userAction" method="{1}" >
+			<result name="toHome" type="redirect" >/</result>
+			<result name="toLogin" >/login.jsp</result>
+			<result name="error" >/login.jsp</result>
+			<result name="regist" >/regist.jsp</result>
+		</action>
+		<action name="SaleVisitAction_*" class="saleVisitAction" method="{1}" >
+			<result name="toList" type="redirectAction" >
+				<param name="namespace">/</param>
+				<param name="actionName">SaleVisitAction_list</param>
+			</result>
+			<result name="list"  >/jsp/salevisit/list.jsp</result>
+			<result name="add"  >/jsp/salevisit/add.jsp</result>
+		</action>
+	    	<action name="BaseDictAction" class="baseDictAction" method="execute"></action>
+	    </package>
+	</struts>
